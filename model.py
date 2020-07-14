@@ -6,6 +6,7 @@ import pickle
 
 dataset = pd.read_csv('hiring.csv')
 
+
 dataset['experience'].fillna(0, inplace=True)
 
 dataset['test_score'].fillna(dataset['test_score'].mean(), inplace=True)
@@ -30,6 +31,7 @@ regressor = LinearRegression()
 
 #Fitting model with trainig data
 regressor.fit(X, y)
+
 
 # Saving model to disk
 pickle.dump(regressor, open('model.pkl','wb'))
