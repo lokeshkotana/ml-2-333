@@ -34,9 +34,9 @@ def predict():
     
     prediction = model.predict([data])
 
-    output = round(prediction[0], 2)
+    output = round(prediction[0], 0)
 
-    return render_template('index.html', prediction_text='The Insurance cost will be $ {}'.format(output))
+    return render_template('index.html', prediction_text='The Insurance cost will be   $ {}'.format(output))
 
 
 if __name__ == "__main__":
