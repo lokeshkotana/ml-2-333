@@ -1,41 +1,58 @@
-# Importing the libraries
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 import pickle
 
-dataset = pd.read_csv('hiring.csv')
+df = pd.read_csv('insurance.csv')
+df = df[['age','sex','smoker', 'charges']]
+df.columns = ['age', 'sex', 'smoker', 'Insurance_Amount']
 
+# took only 3 attributed to create the model
+X = df[['age', 'sex', 'smoker']]
+y = df['Insurance_Amount']
 
-dataset['experience'].fillna(0, inplace=True)
+# sex, smoker are factor variables, so dummified both of these
+X = pd.get_dummies(X)
 
-dataset['test_score'].fillna(dataset['test_score'].mean(), inplace=True)
-
-X = dataset.iloc[:, :3]
-
-#Converting words to integer values
-def convert_to_int(word):
-    word_dict = {'one':1, 'two':2, 'three':3, 'four':4, 'five':5, 'six':6, 'seven':7, 'eight':8,
-                'nine':9, 'ten':10, 'eleven':11, 'twelve':12, 'zero':0, 0: 0}
-    return word_dict[word]
-
-X['experience'] = X['experience'].apply(lambda x : convert_to_int(x))
-
-y = dataset.iloc[:, -1]
-
-#Splitting Training and Test Set
-#Since we have a very small dataset, we will train our model with all availabe data.
-
+# loaded the linear regression module
 from sklearn.linear_model import LinearRegression
 regressor = LinearRegression()
 
-#Fitting model with trainig data
-regressor.fit(X, y)
 
+regressor.fit(X,y)
 
 # Saving model to disk
 pickle.dump(regressor, open('model.pkl','wb'))
 
 # Loading model to compare the results
+
 model = pickle.load(open('model.pkl','rb'))
-print(model.predict([[2, 9, 6]]))
+
+## calling the model to predict 
+data =[]
+
+item = [20, 'Male', 'No']
+
+# As the The training data was dummified one, so we have to pass the 
+# test data in the same format ('age','sex_female',	'sex_male',
+# 'smoker_no','smoker_yes
+
+data.append(item[0])
+if item[1] == 'Male':
+    data.append(0)
+    data.append(1)
+else:
+    data.append(1)
+    data.append(0)
+
+if item[2] == 'No':
+    data.append(1)
+    data.append(0)
+else:
+    data.append(0)
+    data.append(1)
+
+print(data)
+
+# this is single sample
+print(model.predict([data]))
